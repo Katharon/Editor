@@ -6,11 +6,8 @@
       xmlns:viewModels="clr-namespace:Editor.ViewModels"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
+      d:DataContext="{d:DesignInstance Type=viewModels:MainViewModel, IsDesignTimeCreatable=False}"
       Title="MainView">
-
-    <Page.DataContext>
-        <viewModels:MainViewModel />
-    </Page.DataContext>
 
     <Page.InputBindings>
         <KeyBinding Modifiers="Ctrl" Key="N" Command="{Binding NewCommand}" />
@@ -20,66 +17,70 @@
         <KeyBinding Modifiers="Alt" Key="F4" Command="{Binding ExitCommand}" />
     </Page.InputBindings>
 
-    <DockPanel>
-        <!-- Menu -->
-        <Menu DockPanel.Dock="Top" Background="#444">
-            <MenuItem Header="_Datei">
-                <MenuItem Header="_Neu" InputGestureText="Strg+N" Command="{Binding NewCommand}" />
-                <MenuItem Header="_Öffnen" InputGestureText="Strg+O" Command="{Binding OpenCommand}" />
-                <Separator />
-                <MenuItem Header="_Speichern" InputGestureText="Strg+S" Command="{Binding SaveCommand}" />
-                <MenuItem Header="Speichern _unter" InputGestureText="Strg+Umschalt+S" Command="{Binding SaveAsCommand}" />
-                <Separator />
-                <MenuItem Header="_Beenden" InputGestureText="Alt+F4" Command="{Binding ExitCommand}" />
-            </MenuItem>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="30" />
+        </Grid.RowDefinitions>
 
-            <MenuItem Header="_Bearbeiten">
-                <MenuItem Header="_Rückgängig" InputGestureText="Strg+Z" Command="ApplicationCommands.Undo" />
-                <MenuItem Header="Wieder_herstellen" InputGestureText="Strg+Y" Command="ApplicationCommands.Redo" />
-            </MenuItem>
+        <!-- Title Bar -->
+        <Border Grid.Row="0" BorderThickness="0,0,0,1" Background="#444">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
 
-            <MenuItem Header="_Extensions">
-                <MenuItem Header="Extension-_Verwaltung" InputGestureText="Strg+V" Command="{Binding ManageExtensionSetsCommand}" />
-                <MenuItem Header="Dateitypen-_Mapping" InputGestureText="Strg+M" Command="{Binding ManageMappingsCommand}" />
-            </MenuItem>
+                <Menu Grid.Column="0">
+                    <MenuItem Header="_Datei" Height="30">
+                        <MenuItem Header="_Neu" InputGestureText="Strg+N" Command="{Binding NewCommand}" />
+                        <MenuItem Header="_Öffnen" InputGestureText="Strg+O" Command="{Binding OpenCommand}" />
+                        <Separator />
+                        <MenuItem Header="_Speichern" InputGestureText="Strg+S" Command="{Binding SaveCommand}" />
+                        <MenuItem Header="Speichern _unter" InputGestureText="Strg+Umschalt+S" Command="{Binding SaveAsCommand}" />
+                        <Separator />
+                        <MenuItem Header="_Beenden" InputGestureText="Alt+F4" Command="{Binding ExitCommand}" />
+                    </MenuItem>
 
-            <MenuItem Header="Hilfe">
-                <MenuItem Header="Info" Command="{Binding AboutCommand}" />
-            </MenuItem>
-        </Menu>
+                    <MenuItem Header="_Bearbeiten">
+                        <MenuItem Header="_Rückgängig" InputGestureText="Strg+Z" Command="ApplicationCommands.Undo" />
+                        <MenuItem Header="Wieder_herstellen" InputGestureText="Strg+Y" Command="ApplicationCommands.Redo" />
+                    </MenuItem>
 
-        <!-- Tool Bar -->
-        <ToolBarTray DockPanel.Dock="Top" Background="#666">
-            <ToolBar>
-                <Button Content="📄" ToolTip="Neu" Command="{Binding NewCommand}" />
-                <Button Content="📂" ToolTip="Öffnen" Command="{Binding OpenCommand}" />
-                <Button Content="💾" ToolTip="Speichern" Command="{Binding SaveCommand}" />
-                <Separator />
-                <Button Content="⚙" ToolTip="Extension-Sets" Command="{Binding ManageExtensionSetsCommand}" />
-            </ToolBar>
-        </ToolBarTray>
+                    <MenuItem Header="_Extensions">
+                        <MenuItem Header="Extension-_Verwaltung" InputGestureText="Strg+V" Command="{Binding ManageExtensionSetsCommand}" />
+                        <MenuItem Header="Dateitypen-_Mapping" InputGestureText="Strg+M" Command="{Binding ManageMappingsCommand}" />
+                    </MenuItem>
 
-        <!-- Status Bar -->
-        <StatusBar DockPanel.Dock="Bottom" Background="#666">
-            <StatusBarItem>
-                <TextBlock Text="{Binding StatusMessage}" />
-            </StatusBarItem>
-            <StatusBarItem HorizontalAlignment="Right">
-                <TextBlock Text="{Binding CaretPosition}" />
-            </StatusBarItem>
-        </StatusBar>
+                    <MenuItem Header="_Hilfe">
+                        <MenuItem Header="_Informationen" InputGestureText="Strg+I" Command="{Binding AboutCommand}" />
+                    </MenuItem>
+                </Menu>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <Button Width="45" Content="-" Click="Minimize_Click" />
+                    <Button Width="45" Content="🗖" Click="Maximize_Click" />
+                    <Button Width="45" Content="✖" Click="Close_Click" />
+                </StackPanel>
+            </Grid>
+        </Border>
 
         <!-- Main Content -->
-        <Grid Background="#888">
+        <Grid Grid.Row="1" Background="#444">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="250" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
             <!-- Side Bar -->
-            <Border Grid.Column="0" BorderBrush="#666" BorderThickness="0,0,1,0">
+            <Border Grid.Column="0" BorderBrush="#444" BorderThickness="0,0,1,0">
                 <StackPanel Orientation="Vertical">
+                    <!-- Extension Set Header -->
                     <TextBlock Text="Extension-Sets" />
+
+                    <!-- Extension Sets -->
                     <ListBox ItemsSource="{Binding ExtensionSets}" SelectedItem="{Binding SelectedExtensionSet}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
@@ -90,16 +91,11 @@
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
-                    <StackPanel Orientation="Horizontal">
-                        <Button Content="Neu" Command="{Binding AddSetCommand}" />
-                        <Button Content="Bearbeiten" Command="{Binding EditSetCommand}" IsEnabled="{Binding SelectedExtensionSet}" />
-                        <Button Content="Löschen" Command="{Binding DeleteSetCommand}" />
-                    </StackPanel>
                 </StackPanel>
             </Border>
 
             <!-- Tab Control -->
-            <TabControl Grid.Column="1" ItemsSource="{Binding Documents}" SelectedItem="{Binding ActiveDocument}">
+            <TabControl Grid.Column="1" Background="#333" ItemsSource="{Binding Documents}" SelectedItem="{Binding ActiveDocument}">
                 <!-- Tab Header -->
                 <TabControl.ItemTemplate>
                     <DataTemplate>
@@ -110,17 +106,26 @@
                 <!-- Tab Content -->
                 <TabControl.ContentTemplate>
                     <DataTemplate>
-                        <RichTextBox AcceptsTab="True"
-                                     VerticalScrollBarVisibility="Auto"
-                                     HorizontalScrollBarVisibility="Auto"
-                                     FontFamily="Consolas"
-                                     FontSize="14"
-                                     TextChanged="RichTextBox_TextChanged"
-                                     Document="{Binding FlowDocument}" />
+                        <TextBox Text="{Binding Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="Editor_TextChanged" />
                     </DataTemplate>
                 </TabControl.ContentTemplate>
             </TabControl>
         </Grid>
-    </DockPanel>
+
+        <!-- Footer Bar -->
+        <Border Grid.Row="2" BorderThickness="0,1,0,0" Background="#444">
+            <StatusBar Background="Transparent">
+                <!-- Status Message -->
+                <StatusBarItem>
+                    <TextBlock Text="{Binding StatusMessage}" />
+                </StatusBarItem>
+
+                <!-- Caret Position -->
+                <StatusBarItem HorizontalAlignment="Right">
+                    <TextBlock Text="{Binding CaretPosition}" />
+                </StatusBarItem>
+            </StatusBar>
+        </Border>
+    </Grid>
 
 </Page>

@@ -5,5 +5,36 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
 
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#FFFFFF" />
+        </Style>
+
+        <Style TargetType="Button">
+            <Setter Property="Foreground" Value="#FFFFFF" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontSize" Value="12" />
+        </Style>
+
+        <Style TargetType="Menu">
+            <Setter Property="Foreground" Value="#FFFFFF" />
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+
+        <Style TargetType="MenuItem">
+            <Setter Property="Foreground" Value="#FFF" />
+            <Setter Property="Background" Value="#444444" />
+        </Style>
+
+        <Style TargetType="TabControl">
+            <Setter Property="Foreground" Value="#444" />
+            <Setter Property="Background" Value="#444" />
+        </Style>
+
+        <Style TargetType="TabItem">
+            <Setter Property="Foreground" Value="#444" />
+            <Setter Property="Background" Value="#444" />
+        </Style>
+
     </Application.Resources>
 </Application>
