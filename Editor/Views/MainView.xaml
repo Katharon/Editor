@@ -5,9 +5,9 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:viewModels="clr-namespace:Editor.ViewModels"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="720" d:DesignWidth="1280"
       d:DataContext="{d:DesignInstance Type=viewModels:MainViewModel, IsDesignTimeCreatable=False}"
-      Title="MainView">
+      Background="{StaticResource ApplicationBackground}">
 
     <Page.InputBindings>
         <KeyBinding Modifiers="Ctrl" Key="N" Command="{Binding NewCommand}" />
@@ -15,70 +15,76 @@
         <KeyBinding Modifiers="Ctrl" Key="S" Command="{Binding SaveCommand}" />
         <KeyBinding Modifiers="Ctrl+Shift" Key="S" Command="{Binding SaveAsCommand}" />
         <KeyBinding Modifiers="Alt" Key="F4" Command="{Binding ExitCommand}" />
+        <KeyBinding Modifiers="Ctrl" Key="E" Command="{Binding ManageExtensionSetsCommand}" />
+        <KeyBinding Modifiers="Ctrl" Key="M" Command="{Binding ManageMappingsCommand}" />
+        <KeyBinding Modifiers="Ctrl" Key="I" Command="{Binding AboutCommand}" />
     </Page.InputBindings>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30" />
+            <RowDefinition Height="35" />
             <RowDefinition Height="*" />
             <RowDefinition Height="30" />
         </Grid.RowDefinitions>
 
         <!-- Title Bar -->
-        <Border Grid.Row="0" BorderThickness="0,0,0,1" Background="#444">
+        <Border Grid.Row="0" BorderThickness="0,0,0,1" BorderBrush="{StaticResource BorderSegmentation}">
             <Grid>
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
 
-                <Menu Grid.Column="0">
-                    <MenuItem Header="_Datei" Height="30">
+                <TextBlock Grid.Column="0" Text="🧾" Margin="5,0,5,0" FontSize="16" VerticalAlignment="Center" />
+
+                <Menu Grid.Column="1">
+                    <MenuItem Header="_Datei" Height="34">
                         <MenuItem Header="_Neu" InputGestureText="Strg+N" Command="{Binding NewCommand}" />
                         <MenuItem Header="_Öffnen" InputGestureText="Strg+O" Command="{Binding OpenCommand}" />
-                        <Separator />
+                        <Separator Style="{StaticResource Separator}" />
                         <MenuItem Header="_Speichern" InputGestureText="Strg+S" Command="{Binding SaveCommand}" />
                         <MenuItem Header="Speichern _unter" InputGestureText="Strg+Umschalt+S" Command="{Binding SaveAsCommand}" />
-                        <Separator />
+                        <Separator Style="{StaticResource Separator}" />
                         <MenuItem Header="_Beenden" InputGestureText="Alt+F4" Command="{Binding ExitCommand}" />
                     </MenuItem>
 
-                    <MenuItem Header="_Bearbeiten">
+                    <MenuItem Header="_Bearbeiten" Height="34">
                         <MenuItem Header="_Rückgängig" InputGestureText="Strg+Z" Command="ApplicationCommands.Undo" />
                         <MenuItem Header="Wieder_herstellen" InputGestureText="Strg+Y" Command="ApplicationCommands.Redo" />
                     </MenuItem>
 
-                    <MenuItem Header="_Extensions">
-                        <MenuItem Header="Extension-_Verwaltung" InputGestureText="Strg+V" Command="{Binding ManageExtensionSetsCommand}" />
+                    <MenuItem Header="_Extensions" Height="34">
+                        <MenuItem Header="Extension-_Verwaltung" InputGestureText="Strg+E" Command="{Binding ManageExtensionSetsCommand}" />
                         <MenuItem Header="Dateitypen-_Mapping" InputGestureText="Strg+M" Command="{Binding ManageMappingsCommand}" />
                     </MenuItem>
 
-                    <MenuItem Header="_Hilfe">
+                    <MenuItem Header="_Hilfe" Height="34">
                         <MenuItem Header="_Informationen" InputGestureText="Strg+I" Command="{Binding AboutCommand}" />
                     </MenuItem>
                 </Menu>
 
-                <StackPanel Grid.Column="2" Orientation="Horizontal">
-                    <Button Width="45" Content="-" Click="Minimize_Click" />
-                    <Button Width="45" Content="🗖" Click="Maximize_Click" />
-                    <Button Width="45" Content="✖" Click="Close_Click" />
+                <StackPanel Grid.Column="3" Orientation="Horizontal">
+                    <Button Content="⎯"  Width="45" Click="Minimize_Click" />
+                    <Button Content="▢" Width="45" Click="Maximize_Click" />
+                    <Button Content="✕" Width="45" Click="Close_Click" />
                 </StackPanel>
             </Grid>
         </Border>
 
         <!-- Main Content -->
-        <Grid Grid.Row="1" Background="#444">
+        <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="250" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
             <!-- Side Bar -->
-            <Border Grid.Column="0" BorderBrush="#444" BorderThickness="0,0,1,0">
+            <Border Grid.Column="0" BorderThickness="0,0,1,0" BorderBrush="{StaticResource BorderSegmentation}">
                 <StackPanel Orientation="Vertical">
                     <!-- Extension Set Header -->
-                    <TextBlock Text="Extension-Sets" />
+                    <TextBlock Text="Extension-Sets" Margin="5,10,0,0" />
 
                     <!-- Extension Sets -->
                     <ListBox ItemsSource="{Binding ExtensionSets}" SelectedItem="{Binding SelectedExtensionSet}">
@@ -94,8 +100,8 @@
                 </StackPanel>
             </Border>
 
-            <!-- Tab Control -->
-            <TabControl Grid.Column="1" Background="#333" ItemsSource="{Binding Documents}" SelectedItem="{Binding ActiveDocument}">
+            <!-- Editor -->
+            <TabControl Grid.Column="1" ItemsSource="{Binding Documents}" SelectedItem="{Binding ActiveDocument}">
                 <!-- Tab Header -->
                 <TabControl.ItemTemplate>
                     <DataTemplate>
@@ -113,8 +119,8 @@
         </Grid>
 
         <!-- Footer Bar -->
-        <Border Grid.Row="2" BorderThickness="0,1,0,0" Background="#444">
-            <StatusBar Background="Transparent">
+        <Border Grid.Row="2" BorderThickness="0,1,0,0" BorderBrush="{StaticResource BorderSegmentation}">
+            <StatusBar>
                 <!-- Status Message -->
                 <StatusBarItem>
                     <TextBlock Text="{Binding StatusMessage}" />

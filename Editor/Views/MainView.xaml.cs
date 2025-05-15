@@ -1,63 +1,74 @@
-﻿namespace Editor.Views
+﻿// <copyright file="MainView.xaml.cs" company="Fachhochschule Wiener Neustadt GmbH">
+// Copyright (c) Lukas Stumpfel. All rights reserved.
+// </copyright>
+
+namespace Editor.Views
 {
-    using Editor.Models;
-    using Editor.ViewModels;
     using System.Windows;
     using System.Windows.Controls;
-    using System.Windows.Documents;
 
     /// <summary>
-    /// Interaktionslogik für MainView.xaml
+    /// Interaction logic for MainView.xaml. Represents the main editor view.
     /// </summary>
     public partial class MainView : Page
     {
         private readonly Window window;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MainView"/> class.
+        /// </summary>
+        /// <param name="window">The parent window that hosts this page.</param>
         public MainView(Window window)
         {
-            InitializeComponent();
+            this.InitializeComponent();
             this.window = window;
         }
 
+        /// <summary>
+        /// Handles the Loaded event of the editor control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The event data.</param>
         private void Editor_Loaded(object sender, RoutedEventArgs e)
         {
-            if (sender is Document document)
-            {
-            }
-
-            MessageBox.Show("ned so lol");
         }
 
+        /// <summary>
+        /// Handles the TextChanged event of the editor control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The event data.</param>
         private void Editor_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (sender is TextBox document)
-            {
-            }
         }
 
-        private static readonly HashSet<string> Keywords =
-        [
-            "abstract","as","base","bool","break","byte","case","catch","char","checked",
-            "class","const","continue","decimal","default","delegate","do","double","else",
-            "enum","event","explicit","extern","false","finally","fixed","float","for",
-            "foreach","goto","if","implicit","in","int","interface","internal","is","lock",
-            "long","namespace","new","null","object","operator","out","override","params",
-            "private","protected","public","readonly","ref","return","sbyte","sealed",
-            "short","sizeof","stackalloc","static","string","struct","switch","this",
-            "throw","true","try","typeof","uint","ulong","unchecked","unsafe","ushort",
-            "using","virtual","void","volatile","while"
-        ];
-
+        /// <summary>
+        /// Minimizes the window when the Minimize button is clicked.
+        /// </summary>
+        /// <param name="sender">The source of the click event.</param>
+        /// <param name="e">The event data.</param>
         private void Minimize_Click(object sender, RoutedEventArgs e)
         {
             this.window.WindowState = WindowState.Minimized;
         }
 
+        /// <summary>
+        /// Toggles between normal and maximized window state when the Maximize button is clicked.
+        /// </summary>
+        /// <param name="sender">The source of the click event.</param>
+        /// <param name="e">The event data.</param>
         private void Maximize_Click(object sender, RoutedEventArgs e)
         {
-            this.window.WindowState = (this.window.WindowState == WindowState.Maximized) ? WindowState.Normal : WindowState.Maximized;
+            this.window.WindowState = (this.window.WindowState == WindowState.Maximized)
+                ? WindowState.Normal
+                : WindowState.Maximized;
         }
 
+        /// <summary>
+        /// Closes the window when the Close button is clicked.
+        /// </summary>
+        /// <param name="sender">The source of the click event.</param>
+        /// <param name="e">The event data.</param>
         private void Close_Click(object sender, RoutedEventArgs e)
         {
             this.window.Close();

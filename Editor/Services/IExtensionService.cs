@@ -1,11 +1,12 @@
-﻿namespace Editor.Services
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
+﻿// <copyright file="IExtensionService.cs" company="Fachhochschule Wiener Neustadt GmbH">
+// Copyright (c) Lukas Stumpfel. All rights reserved.
+// </copyright>
 
+namespace Editor.Services
+{
+    /// <summary>
+    /// Defines functionality for managing editor extensions, such as loading, unloading, and activating them.
+    /// </summary>
     public interface IExtensionService
     {
     }

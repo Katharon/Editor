@@ -1,0 +1,7 @@
+﻿[*.{cs,vb}]
+
+# IDE0028: Initialisierung der Sammlung vereinfachen
+dotnet_diagnostic.IDE0028.severity = none
+
+# IDE0290: Primären Konstruktor verwenden
+dotnet_diagnostic.IDE0290.severity = none

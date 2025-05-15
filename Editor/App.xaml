@@ -1,39 +1,181 @@
 ﻿<Application x:Class="Editor.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:Editor.Converters"
              xmlns:local="clr-namespace:Editor"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
 
+        <!-- Static Resources - Converters -->
+        <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
+
+        <!-- Static Resources - Colors -->
+        <SolidColorBrush x:Key="ApplicationBackground" Color="#333333" />
+        <SolidColorBrush x:Key="ForegroundColor" Color="#EEEEEE" />
+        <SolidColorBrush x:Key="ActiveTabColor" Color="#505050" />
+        <SolidColorBrush x:Key="InactiveTabColor" Color="#424242" />
+        <SolidColorBrush x:Key="BorderSegmentation" Color="#1E1E1E" />
+        <SolidColorBrush x:Key="EditorBackgroundColor" Color="#262626" />
+        <SolidColorBrush x:Key="HoverColor" Color="#666666" />
+
+        <!-- General Styles -->
         <Style TargetType="TextBlock">
-            <Setter Property="Foreground" Value="#FFFFFF" />
+            <Setter Property="Foreground" Value="{StaticResource ForegroundColor}" />
+            <Setter Property="Padding" Value="5,0,5,0" />
+        </Style>
+
+        <!-- Title Bar -->
+        <Style TargetType="Menu">
+            <Setter Property="Foreground" Value="{StaticResource ForegroundColor}" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+
+        <Style TargetType="MenuItem">
+            <Setter Property="Foreground" Value="{StaticResource ForegroundColor}" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="Padding" Value="5" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="MenuItem">
+                        <Grid>
+                            <Border x:Name="Border"
+                                    Background="{TemplateBinding Background}"
+                                    Padding="{TemplateBinding Padding}">
+                                <DockPanel>
+                                    <!-- Header (left) -->
+                                    <ContentPresenter ContentSource="Header"
+                                                      RecognizesAccessKey="True"
+                                                      VerticalAlignment="Center"
+                                                      HorizontalAlignment="Center"
+                                                      DockPanel.Dock="Left" />
+                                    <!-- InputGestureText (right) -->
+                                    <TextBlock Text="{TemplateBinding InputGestureText}"
+                                               Foreground="{TemplateBinding Foreground}"
+                                               Margin="20,0,0,0"
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Right"
+                                               Visibility="{Binding InputGestureText,
+                                                            RelativeSource={RelativeSource TemplatedParent},
+                                                            Converter={StaticResource StringToVisibilityConverter}}" />
+                                </DockPanel>
+                            </Border>
+                            <Popup x:Name="Popup"
+                                   Placement="Bottom"
+                                   IsOpen="{TemplateBinding IsSubmenuOpen}"
+                                   AllowsTransparency="True"
+                                   Focusable="False"
+                                   PopupAnimation="Fade">
+                                <Border Background="{StaticResource ApplicationBackground}"
+                                        BorderBrush="{StaticResource BorderSegmentation}"
+                                        BorderThickness="1"
+                                        SnapsToDevicePixels="True">
+                                    <StackPanel IsItemsHost="True" />
+                                </Border>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="{StaticResource HoverColor}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="Separator" x:Key="Separator">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Separator">
+                        <Border Height="1"
+                                Background="{StaticResource BorderSegmentation}"
+                                HorizontalAlignment="Stretch"
+                                SnapsToDevicePixels="False"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
         <Style TargetType="Button">
-            <Setter Property="Foreground" Value="#FFFFFF" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Border" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="{StaticResource HoverColor}" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="False">
+                                <Setter TargetName="Border" Property="Background" Value="Transparent" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
-        <Style TargetType="Menu">
-            <Setter Property="Foreground" Value="#FFFFFF" />
+        <!-- Side Bar -->
+        <Style TargetType="ListBox">
             <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="5" />
         </Style>
 
-        <Style TargetType="MenuItem">
-            <Setter Property="Foreground" Value="#FFF" />
-            <Setter Property="Background" Value="#444444" />
-        </Style>
-
+        <!-- Main Content  -->
         <Style TargetType="TabControl">
-            <Setter Property="Foreground" Value="#444" />
-            <Setter Property="Background" Value="#444" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
         </Style>
 
         <Style TargetType="TabItem">
-            <Setter Property="Foreground" Value="#444" />
-            <Setter Property="Background" Value="#444" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="Border" CornerRadius="3,3,0,0">
+                            <ContentPresenter ContentSource="Header" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="{StaticResource ActiveTabColor}" />
+                                <Setter TargetName="Border" Property="Margin" Value="1,2,1,0" />
+                                <Setter TargetName="Border" Property="Padding" Value="17,5,17,5" />
+                                <Setter TargetName="Border" Property="BorderThickness" Value="0,1,0,0" />
+                                <Setter TargetName="Border" Property="BorderBrush" Value="Cyan" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="False">
+                                <Setter TargetName="Border" Property="Background" Value="{StaticResource InactiveTabColor}" />
+                                <Setter TargetName="Border" Property="Margin" Value="1,5,1,0" />
+                                <Setter TargetName="Border" Property="Padding" Value="15,5,15,5" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Padding" Value="10" />
+            <Setter Property="Foreground" Value="{StaticResource ForegroundColor}" />
+            <Setter Property="Background" Value="{StaticResource EditorBackgroundColor}" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+
+        <!-- Footer Bar -->
+        <Style TargetType="StatusBar">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+
+        <Style TargetType="StatusBarItem">
+            <Setter Property="Margin" Value="5,0,10,2" />
         </Style>
 
     </Application.Resources>
