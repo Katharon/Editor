@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="Editor.Domain.Document">
+    <Position X="6" Y="2.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Document.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Editor.Domain.ExtensionSet">
+    <Position X="2" Y="4.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ExtensionSet.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Struct Name="Editor.Domain.CursorPosition">
+    <Position X="6" Y="4.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAYAA=</HashCode>
+      <FileName>CursorPosition.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Interface Name="Editor.Domain.IExtensionSet">
+    <Position X="2" Y="2.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAgAAAAAAAA=</HashCode>
+      <FileName>IExtensionSet.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -9,8 +9,10 @@ namespace Editor.ViewModels
     using System.ComponentModel;
     using System.IO;
     using System.Windows;
+    using System.Windows.Documents;
     using System.Windows.Input;
     using Editor.Commands;
+    using Editor.Extensions;
     using Editor.Models;
     using Editor.Services;
 
@@ -21,7 +23,9 @@ namespace Editor.ViewModels
     public class MainViewModel : INotifyPropertyChanged
     {
         private readonly IApplicationService applicationService;
+
         private readonly IDialogService dialogService;
+
         private readonly IExtensionService extensionService;
 
         /// <summary>
@@ -36,10 +40,11 @@ namespace Editor.ViewModels
             this.dialogService = dialogService;
             this.extensionService = extensionService;
 
-            this.ExtensionSets = new ObservableCollection<Extension>();
+            this.Extensions = new ObservableCollection<Extension>();
+            this.ExtensionSets = new ObservableCollection<ExtensionSet>();
             this.Documents = new ObservableCollection<Document>();
 
-            this.NewCommand.Execute(null);
+            this.NewFileCommand.Execute(null);
         }
 
         /// <summary>
@@ -74,14 +79,32 @@ namespace Editor.ViewModels
         }
 
         /// <summary>
+        /// Gets or sets the collection of available extensions.
+        /// </summary>
+        public ObservableCollection<Extension> Extensions { get; set; }
+
+        /// <summary>
+        /// Gets or sets the currently selected extension.
+        /// </summary>
+        public Extension? SelectedExtension
+        {
+            get => field;
+            set
+            {
+                field = value;
+                this.OnPropertyChanged(nameof(this.SelectedExtension));
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the collection of available extension sets.
         /// </summary>
-        public ObservableCollection<Extension> ExtensionSets { get; set; }
+        public ObservableCollection<ExtensionSet> ExtensionSets { get; set; }
 
         /// <summary>
         /// Gets or sets the currently selected extension set.
         /// </summary>
-        public Extension? SelectedExtensionSet
+        public ExtensionSet? SelectedExtensionSet
         {
             get => field;
             set
@@ -99,35 +122,35 @@ namespace Editor.ViewModels
         /// <summary>
         /// Gets or sets the currently active document.
         /// </summary>
-        public Document? ActiveDocument
+        public Document? SelectedDocument
         {
             get => field;
             set
             {
                 field = value;
-                this.OnPropertyChanged(nameof(this.ActiveDocument));
-                this.OnPropertyChanged(nameof(this.SaveCommand));
-                this.OnPropertyChanged(nameof(this.SaveAsCommand));
+                this.OnPropertyChanged(nameof(this.SelectedDocument));
+                this.OnPropertyChanged(nameof(this.SaveFileCommand));
+                this.OnPropertyChanged(nameof(this.SaveFileAsCommand));
             }
         }
 
         /// <summary>
         /// Gets the command to create a new document.
         /// </summary>
-        public ICommand NewCommand => new RelayCommand(() =>
+        public ICommand NewFileCommand => new RelayCommand(() =>
         {
             var document = new Document
             {
                 FileName = "New File",
             };
             this.Documents.Add(document);
-            this.ActiveDocument = document;
+            this.SelectedDocument = document;
         });
 
         /// <summary>
         /// Gets the command to open an existing file.
         /// </summary>
-        public ICommand OpenCommand => new RelayCommand(() =>
+        public ICommand OpenFileCommand => new RelayCommand(() =>
         {
             string? filePath = this.dialogService.ShowOpenFileDialog("Datei öffnen", string.Empty);
             if (filePath == null)
@@ -138,16 +161,21 @@ namespace Editor.ViewModels
 
             try
             {
-                var content = File.ReadAllText(filePath);
-                var document = new Document
+                var flowDocument = new FlowDocument();
+                var range = new TextRange(flowDocument.ContentStart, flowDocument.ContentEnd);
+
+                using var stream = new FileStream(filePath, FileMode.Open);
+                range.Load(stream, DataFormats.Text);
+
+                var document = new Document()
                 {
                     FilePath = filePath,
                     FileName = Path.GetFileName(filePath),
-                    Content = content,
+                    FlowDocument = flowDocument,
                 };
 
                 this.Documents.Add(document);
-                this.ActiveDocument = document;
+                this.SelectedDocument = document;
             }
             catch (Exception ex)
             {
@@ -158,18 +186,21 @@ namespace Editor.ViewModels
         /// <summary>
         /// Gets the command to save the current document.
         /// </summary>
-        public ICommand SaveCommand => new RelayCommand(
-            canExecute: () => this.ActiveDocument != null,
+        public ICommand SaveFileCommand => new RelayCommand(
+            canExecute: () => this.SelectedDocument != null,
             execute: () =>
             {
-                if (this.ActiveDocument != null)
+                if (this.SelectedDocument != null)
                 {
-                    if (!string.IsNullOrWhiteSpace(this.ActiveDocument.FilePath))
+                    if (!string.IsNullOrWhiteSpace(this.SelectedDocument.FilePath))
                     {
                         try
                         {
-                            File.WriteAllText(this.ActiveDocument.FilePath, this.ActiveDocument.Content);
-                            this.StatusMessage = $"Gespeichert: {this.ActiveDocument.FileName}";
+                            var flowDocument = this.SelectedDocument.FlowDocument;
+                            var range = new TextRange(flowDocument.ContentStart, flowDocument.ContentEnd);
+                            File.WriteAllText(this.SelectedDocument.FilePath, range.Text);
+
+                            this.StatusMessage = $"Gespeichert: {this.SelectedDocument.FileName}";
                         }
                         catch (Exception ex)
                         {
@@ -182,20 +213,22 @@ namespace Editor.ViewModels
                     string? filePath = this.dialogService.ShowSaveFileDialog("Datei speichern", "Textdateien (*.txt)|*.txt|Alle Dateien (*.*)|*.*", ".txt");
                     if (filePath == null)
                     {
-                        MessageBox.Show("No Filepath");
                         return;
                     }
 
                     try
                     {
-                        File.WriteAllText(filePath, this.ActiveDocument.Content);
-                        this.ActiveDocument.FilePath = filePath;
-                        this.ActiveDocument.FileName = Path.GetFileName(filePath);
-                        this.StatusMessage = $"Gespeichert als: {this.ActiveDocument.FileName}";
+                        var flowDocument = this.SelectedDocument.FlowDocument;
+                        var range = new TextRange(flowDocument.ContentStart, flowDocument.ContentEnd);
+                        File.WriteAllText(filePath, range.Text);
+
+                        this.SelectedDocument.FilePath = filePath;
+                        this.SelectedDocument.FileName = Path.GetFileName(filePath);
+                        this.StatusMessage = $"Gespeichert als: {this.SelectedDocument.FileName}";
                     }
                     catch (Exception ex)
                     {
-                        this.StatusMessage = $"NICHT Gespeichert: {this.ActiveDocument.FileName}";
+                        this.StatusMessage = $"NICHT Gespeichert: {this.SelectedDocument.FileName}";
                         this.dialogService.ShowError("Fehler beim Speichern", ex.Message);
                     }
                 }
@@ -204,29 +237,31 @@ namespace Editor.ViewModels
         /// <summary>
         /// Gets the command to save the current document under a new file name.
         /// </summary>
-        public ICommand SaveAsCommand => new RelayCommand(
-            canExecute: () => this.ActiveDocument != null,
+        public ICommand SaveFileAsCommand => new RelayCommand(
+            canExecute: () => this.SelectedDocument != null,
             execute: () =>
             {
-                if (this.ActiveDocument != null)
+                if (this.SelectedDocument != null)
                 {
                     string? filePath = this.dialogService.ShowSaveFileDialog("Datei speichern", "Textdateien (*.txt)|*.txt|Alle Dateien (*.*)|*.*", ".txt");
                     if (filePath == null)
                     {
-                        MessageBox.Show("No Filepath");
                         return;
                     }
 
                     try
                     {
-                        File.WriteAllText(filePath, this.ActiveDocument.Content);
-                        this.ActiveDocument.FilePath = filePath;
-                        this.ActiveDocument.FileName = Path.GetFileName(filePath);
-                        this.StatusMessage = $"Gespeichert als: {this.ActiveDocument.FileName}";
+                        var flowDocument = this.SelectedDocument.FlowDocument;
+                        var range = new TextRange(flowDocument.ContentStart, flowDocument.ContentEnd);
+                        File.WriteAllText(filePath, range.Text);
+
+                        this.SelectedDocument.FilePath = filePath;
+                        this.SelectedDocument.FileName = Path.GetFileName(filePath);
+                        this.StatusMessage = $"Gespeichert als: {this.SelectedDocument.FileName}";
                     }
                     catch (Exception ex)
                     {
-                        this.StatusMessage = $"NICHT Gespeichert: {this.ActiveDocument.FileName}";
+                        this.StatusMessage = $"NICHT Gespeichert: {this.SelectedDocument.FileName}";
                         this.dialogService.ShowError("Fehler beim Speichern", ex.Message);
                     }
                 }
@@ -241,9 +276,48 @@ namespace Editor.ViewModels
         });
 
         /// <summary>
-        /// Gets the command to manage extension sets.
+        /// Gets the command to add a new extension.
         /// </summary>
-        public ICommand ManageExtensionSetsCommand => new RelayCommand(() => MessageBox.Show("Manage Extension-Sets Command"));
+        public ICommand NewExtensionCommand => new RelayCommand(() =>
+        {
+            // ToDo: nur Extensionnamen speichern.
+            string? filePath = this.dialogService.ShowSaveFileDialog("Extension Namen wählen", "Textdateien (*.txt)|*.txt|Alle Dateien (*.*)|*.*", string.Empty);
+            if (filePath == null)
+            {
+                return;
+            }
+
+            var extension = new Extension()
+            {
+                DisplayName = Path.GetFileName(filePath),
+                IsEnabled = false,
+            };
+
+            this.Extensions.Add(extension);
+            this.SelectedExtension = extension;
+        });
+
+        /// <summary>
+        /// Gets the command to add a new extension set.
+        /// </summary>
+        public ICommand NewExtensionSetCommand => new RelayCommand(() =>
+        {
+            // ToDo: nur Extensionnamen speichern.
+            string? filePath = this.dialogService.ShowSaveFileDialog("Extension Set Namen wählen", "Textdateien (*.txt)|*.txt|Alle Dateien (*.*)|*.*", string.Empty);
+            if (filePath == null)
+            {
+                return;
+            }
+
+            var extensionSet = new ExtensionSet()
+            {
+                DisplayName = Path.GetFileName(filePath),
+                IsEnabled = false,
+            };
+
+            this.ExtensionSets.Add(extensionSet);
+            this.SelectedExtensionSet = extensionSet;
+        });
 
         /// <summary>
         /// Gets the command to manage file mappings.

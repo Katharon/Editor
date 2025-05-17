@@ -66,19 +66,6 @@ namespace Editor.Models
         }
 
         /// <summary>
-        /// Gets or sets the plain text representation of the document content.
-        /// </summary>
-        public string? Content
-        {
-            get => field;
-            set
-            {
-                this.OnPropertyChanged(nameof(this.Content));
-                field = value;
-            }
-        }
-
-        /// <summary>
         /// Raises the <see cref="PropertyChanged"/> event for the specified property.
         /// </summary>
         /// <param name="propertyName">The name of the property that changed.</param>

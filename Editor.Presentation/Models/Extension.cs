@@ -24,14 +24,14 @@ namespace Editor.Models
         public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
-        /// Gets or sets a value indicating whether the extension is currently active.
+        /// Gets or sets a value indicating whether the extension is currently enabled.
         /// </summary>
-        public bool IsActive
+        public bool IsEnabled
         {
             get => field;
             set
             {
-                this.OnPropertyChanged(nameof(this.IsActive));
+                this.OnPropertyChanged(nameof(this.IsEnabled));
                 field = value;
             }
         }
@@ -39,12 +39,12 @@ namespace Editor.Models
         /// <summary>
         /// Gets or sets the display name of the extension.
         /// </summary>
-        public string? Name
+        public string? DisplayName
         {
             get => field;
             set
             {
-                this.OnPropertyChanged(nameof(this.Name));
+                this.OnPropertyChanged(nameof(this.DisplayName));
                 field = value;
             }
         }

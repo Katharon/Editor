@@ -3,6 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:controls="clr-namespace:Editor.Controls"
       xmlns:viewModels="clr-namespace:Editor.ViewModels"
       mc:Ignorable="d" 
       d:DesignHeight="720" d:DesignWidth="1280"
@@ -10,12 +11,12 @@
       Background="{StaticResource ApplicationBackground}">
 
     <Page.InputBindings>
-        <KeyBinding Modifiers="Ctrl" Key="N" Command="{Binding NewCommand}" />
-        <KeyBinding Modifiers="Ctrl" Key="O" Command="{Binding OpenCommand}" />
-        <KeyBinding Modifiers="Ctrl" Key="S" Command="{Binding SaveCommand}" />
-        <KeyBinding Modifiers="Ctrl+Shift" Key="S" Command="{Binding SaveAsCommand}" />
+        <KeyBinding Modifiers="Ctrl" Key="N" Command="{Binding NewFileCommand}" />
+        <KeyBinding Modifiers="Ctrl" Key="O" Command="{Binding OpenFileCommand}" />
+        <KeyBinding Modifiers="Ctrl" Key="S" Command="{Binding SaveFileCommand}" />
+        <KeyBinding Modifiers="Ctrl+Shift" Key="S" Command="{Binding SaveFileAsCommand}" />
         <KeyBinding Modifiers="Alt" Key="F4" Command="{Binding ExitCommand}" />
-        <KeyBinding Modifiers="Ctrl" Key="E" Command="{Binding ManageExtensionSetsCommand}" />
+        <KeyBinding Modifiers="Ctrl" Key="E" Command="{Binding NewExtensionSetCommand}" />
         <KeyBinding Modifiers="Ctrl" Key="M" Command="{Binding ManageMappingsCommand}" />
         <KeyBinding Modifiers="Ctrl" Key="I" Command="{Binding AboutCommand}" />
     </Page.InputBindings>
@@ -41,11 +42,11 @@
 
                 <Menu Grid.Column="1">
                     <MenuItem Header="_Datei" Height="34">
-                        <MenuItem Header="_Neu" InputGestureText="Strg+N" Command="{Binding NewCommand}" />
-                        <MenuItem Header="_Öffnen" InputGestureText="Strg+O" Command="{Binding OpenCommand}" />
+                        <MenuItem Header="_Neu" InputGestureText="Strg+N" Command="{Binding NewFileCommand}" />
+                        <MenuItem Header="_Öffnen" InputGestureText="Strg+O" Command="{Binding OpenFileCommand}" />
                         <Separator Style="{StaticResource Separator}" />
-                        <MenuItem Header="_Speichern" InputGestureText="Strg+S" Command="{Binding SaveCommand}" />
-                        <MenuItem Header="Speichern _unter" InputGestureText="Strg+Umschalt+S" Command="{Binding SaveAsCommand}" />
+                        <MenuItem Header="_Speichern" InputGestureText="Strg+S" Command="{Binding SaveFileCommand}" />
+                        <MenuItem Header="Speichern _unter" InputGestureText="Strg+Umschalt+S" Command="{Binding SaveFileAsCommand}" />
                         <Separator Style="{StaticResource Separator}" />
                         <MenuItem Header="_Beenden" InputGestureText="Alt+F4" Command="{Binding ExitCommand}" />
                     </MenuItem>
@@ -56,7 +57,7 @@
                     </MenuItem>
 
                     <MenuItem Header="_Extensions" Height="34">
-                        <MenuItem Header="Extension-_Verwaltung" InputGestureText="Strg+E" Command="{Binding ManageExtensionSetsCommand}" />
+                        <MenuItem Header="Extension-_Hinzufügen" InputGestureText="Strg+E" Command="{Binding NewExtensionSetCommand}" />
                         <MenuItem Header="Dateitypen-_Mapping" InputGestureText="Strg+M" Command="{Binding ManageMappingsCommand}" />
                     </MenuItem>
 
@@ -92,7 +93,8 @@
                             <DataTemplate>
                                 <DockPanel>
                                     <CheckBox IsChecked="{Binding IsActive}" />
-                                    <TextBlock Text="{Binding Name}" />
+                                    <TextBlock Text="{Binding DisplayName}" />
+                                    <Button Content="+" Background="Red" Command="{Binding NewExtensionCommand}" />
                                 </DockPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
@@ -101,7 +103,7 @@
             </Border>
 
             <!-- Editor -->
-            <TabControl Grid.Column="1" ItemsSource="{Binding Documents}" SelectedItem="{Binding ActiveDocument}">
+            <TabControl Grid.Column="1" ItemsSource="{Binding Documents}" SelectedItem="{Binding SelectedDocument}">
                 <!-- Tab Header -->
                 <TabControl.ItemTemplate>
                     <DataTemplate>
@@ -112,7 +114,8 @@
                 <!-- Tab Content -->
                 <TabControl.ContentTemplate>
                     <DataTemplate>
-                        <TextBox Text="{Binding Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="Editor_TextChanged" />
+                        <controls:BindableRichTextBox BindableDocument="{Binding FlowDocument, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                      TextChanged="Editor_TextChanged" />
                     </DataTemplate>
                 </TabControl.ContentTemplate>
             </TabControl>
