@@ -2,7 +2,7 @@
 // Copyright (c) Lukas Stumpfel. All rights reserved.
 // </copyright>
 
-namespace Editor.ViewModels
+namespace Editor.Presentation.ViewModels
 {
     using System;
     using System.Collections.ObjectModel;
@@ -11,16 +11,16 @@ namespace Editor.ViewModels
     using System.Windows;
     using System.Windows.Documents;
     using System.Windows.Input;
-    using Editor.Commands;
-    using Editor.Extensions;
-    using Editor.Models;
-    using Editor.Services;
+    using Editor.Application;
+    using Editor.Domain;
+    using Editor.Presentation.Commands;
+    using Editor.Presentation.Models;
 
     /// <summary>
     /// Represents the main view model of the application, containing documents, extensions,
     /// editor commands, and state information such as the status message and caret position.
     /// </summary>
-    public class MainViewModel : INotifyPropertyChanged
+    public class MainViewModel : ObservableObject, INotifyPropertyChanged
     {
         private readonly IApplicationService applicationService;
 
@@ -40,7 +40,7 @@ namespace Editor.ViewModels
             this.dialogService = dialogService;
             this.extensionService = extensionService;
 
-            this.Extensions = new ObservableCollection<Extension>();
+            this.Extensions = new ObservableCollection<ExtensionOld>();
             this.ExtensionSets = new ObservableCollection<ExtensionSet>();
             this.Documents = new ObservableCollection<Document>();
 
@@ -50,7 +50,7 @@ namespace Editor.ViewModels
         /// <summary>
         /// Occurs when a property value changes.
         /// </summary>
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChangedOld;
 
         /// <summary>
         /// Gets or sets the status message shown to the user.
@@ -60,8 +60,7 @@ namespace Editor.ViewModels
             get => field;
             set
             {
-                field = value;
-                this.OnPropertyChanged(nameof(this.StatusMessage));
+                this.SetProperty(ref field, value);
             }
         }
 
@@ -73,26 +72,24 @@ namespace Editor.ViewModels
             get => field;
             set
             {
-                field = value;
-                this.OnPropertyChanged(nameof(this.CaretPosition));
+                this.SetProperty(ref field, value);
             }
         }
 
         /// <summary>
         /// Gets or sets the collection of available extensions.
         /// </summary>
-        public ObservableCollection<Extension> Extensions { get; set; }
+        public ObservableCollection<ExtensionOld> Extensions { get; set; }
 
         /// <summary>
         /// Gets or sets the currently selected extension.
         /// </summary>
-        public Extension? SelectedExtension
+        public ExtensionOld? SelectedExtension
         {
             get => field;
             set
             {
-                field = value;
-                this.OnPropertyChanged(nameof(this.SelectedExtension));
+                this.SetProperty(ref field, value);
             }
         }
 
@@ -109,8 +106,7 @@ namespace Editor.ViewModels
             get => field;
             set
             {
-                field = value;
-                this.OnPropertyChanged(nameof(this.SelectedExtensionSet));
+                this.SetProperty(ref field, value);
             }
         }
 
@@ -127,7 +123,7 @@ namespace Editor.ViewModels
             get => field;
             set
             {
-                field = value;
+                this.SetProperty(ref field, value);
                 this.OnPropertyChanged(nameof(this.SelectedDocument));
                 this.OnPropertyChanged(nameof(this.SaveFileCommand));
                 this.OnPropertyChanged(nameof(this.SaveFileAsCommand));
@@ -143,6 +139,7 @@ namespace Editor.ViewModels
             {
                 FileName = "New File",
             };
+
             this.Documents.Add(document);
             this.SelectedDocument = document;
         });
@@ -171,7 +168,7 @@ namespace Editor.ViewModels
                 {
                     FilePath = filePath,
                     FileName = Path.GetFileName(filePath),
-                    FlowDocument = flowDocument,
+                    Content = new TextRange(flowDocument.ContentStart, flowDocument.ContentEnd).Text,
                 };
 
                 this.Documents.Add(document);
@@ -196,9 +193,10 @@ namespace Editor.ViewModels
                     {
                         try
                         {
-                            var flowDocument = this.SelectedDocument.FlowDocument;
-                            var range = new TextRange(flowDocument.ContentStart, flowDocument.ContentEnd);
-                            File.WriteAllText(this.SelectedDocument.FilePath, range.Text);
+                            // var flowDocument = this.SelectedDocument.Content;
+                            // var range = new TextRange(flowDocument.ContentStart, flowDocument.ContentEnd);
+                            // File.WriteAllText(this.SelectedDocument.FilePath, range.Text);
+                            File.WriteAllText(this.SelectedDocument.FilePath, this.SelectedDocument.Content);
 
                             this.StatusMessage = $"Gespeichert: {this.SelectedDocument.FileName}";
                         }
@@ -218,9 +216,10 @@ namespace Editor.ViewModels
 
                     try
                     {
-                        var flowDocument = this.SelectedDocument.FlowDocument;
-                        var range = new TextRange(flowDocument.ContentStart, flowDocument.ContentEnd);
-                        File.WriteAllText(filePath, range.Text);
+                        // var flowDocument = this.SelectedDocument.FlowDocument;
+                        // var range = new TextRange(flowDocument.ContentStart, flowDocument.ContentEnd);
+                        // File.WriteAllText(filePath, range.Text);
+                        File.WriteAllText(filePath, this.SelectedDocument.Content);
 
                         this.SelectedDocument.FilePath = filePath;
                         this.SelectedDocument.FileName = Path.GetFileName(filePath);
@@ -251,9 +250,10 @@ namespace Editor.ViewModels
 
                     try
                     {
-                        var flowDocument = this.SelectedDocument.FlowDocument;
-                        var range = new TextRange(flowDocument.ContentStart, flowDocument.ContentEnd);
-                        File.WriteAllText(filePath, range.Text);
+                        // var flowDocument = this.SelectedDocument.FlowDocument;
+                        // var range = new TextRange(flowDocument.ContentStart, flowDocument.ContentEnd);
+                        // File.WriteAllText(filePath, range.Text);
+                        File.WriteAllText(filePath, this.SelectedDocument.Content);
 
                         this.SelectedDocument.FilePath = filePath;
                         this.SelectedDocument.FileName = Path.GetFileName(filePath);
@@ -287,7 +287,7 @@ namespace Editor.ViewModels
                 return;
             }
 
-            var extension = new Extension()
+            var extension = new ExtensionOld()
             {
                 DisplayName = Path.GetFileName(filePath),
                 IsEnabled = false,
@@ -311,7 +311,7 @@ namespace Editor.ViewModels
 
             var extensionSet = new ExtensionSet()
             {
-                DisplayName = Path.GetFileName(filePath),
+                Name = Path.GetFileName(filePath),
                 IsEnabled = false,
             };
 
@@ -345,12 +345,12 @@ namespace Editor.ViewModels
         public ICommand DeleteSetCommand => new RelayCommand(() => MessageBox.Show("Delete Set Command"));
 
         /// <summary>
-        /// Raises the <see cref="PropertyChanged"/> event for the specified property.
+        /// Raises the <see cref="PropertyChangedOld"/> event for the specified property.
         /// </summary>
         /// <param name="propertyName">The name of the property that changed.</param>
         private void OnPropertyChanged(string propertyName)
         {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            this.PropertyChangedOld?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

@@ -1,19 +1,33 @@
 ﻿namespace Editor.Application
 {
+    using Editor.Domain;
     using Editor.PluginContracts;
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
 
-    public class ExtensionManager : IExtensionManager
+    public class ExtensionManager : ObservableObject, IExtensionManager
     {
-        public List<IExtension> Extensions
+        public ExtensionManager()
         {
-            get => default;
+            this.Extensions = new List<IExtension>();    
+        }
+
+        required public IEnumerable<IExtension> Extensions
+        {
+            get => field;
             set
             {
+                SetProperty(ref field, value);
             }
+        }
+
+        public void Load()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Refresh()
+        {
+            throw new NotImplementedException();
         }
     }
 }

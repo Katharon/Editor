@@ -1,17 +1,17 @@
-﻿// <copyright file="DialogService.cs" company="Fachhochschule Wiener Neustadt GmbH">
+﻿// <copyright file="DialogServiceOld.cs" company="Fachhochschule Wiener Neustadt GmbH">
 // Copyright (c) Lukas Stumpfel. All rights reserved.
 // </copyright>
 
 namespace Editor.Presentation.Services
 {
+    using System.Collections.Generic;
     using System.Windows;
-    using Editor.Application;
     using Microsoft.Win32;
 
     /// <summary>
-    /// .
+    /// Provides various dialog functionalities for file handling and user interaction.
     /// </summary>
-    public class DialogService : IDialogService
+    public class DialogServiceOld // : IDialogService
     {
         /// <inheritdoc/>
         public string? ShowOpenFileDialog(string title, string filter)
@@ -39,15 +39,33 @@ namespace Editor.Presentation.Services
         }
 
         /// <inheritdoc/>
-        public void ShowMessage(string message, string title = "Info")
+        public string? ShowLoadExtensionSetDialog()
         {
-            MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Information);
+            return ShowOpenFileDialog("Erweiterungsset laden", "Erweiterungssets (*.extset)|*.extset");
         }
 
         /// <inheritdoc/>
-        public void ShowError(string message, string title = "Fehler")
+        public string? ShowSaveExtensionSetDialog()
+        {
+            return ShowSaveFileDialog("Erweiterungsset speichern", "Erweiterungssets (*.extset)|*.extset", ".extset");
+        }
+
+        /// <inheritdoc/>
+        public void ShowError(string title, string message)
         {
             MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
+        /// <inheritdoc/>
+        public bool ShowConfirmation(string title, string message)
+        {
+            return MessageBox.Show(message, title, MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK;
+        }
+
+        /// <inheritdoc/>
+        public string? ShowSelectionDialog(string title, IEnumerable<string> options)
+        {
+            return null;
         }
     }
 }

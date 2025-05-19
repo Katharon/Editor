@@ -2,7 +2,7 @@
 // Copyright (c) Lukas Stumpfel. All rights reserved.
 // </copyright>
 
-namespace Editor.Converters
+namespace Editor.Presentation.Converters
 {
     using System;
     using System.Globalization;

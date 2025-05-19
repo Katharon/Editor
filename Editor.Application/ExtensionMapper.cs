@@ -3,33 +3,47 @@
     using Editor.Domain;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
 
-    public class ExtensionMapper : IExtensionMapper
+    public class ExtensionMapper : ObservableObject, IExtensionMapper
     {
-        public string FileExtension
+        public ExtensionMapper()
         {
-            get => default;
+            // this.ExtensionSets = new List<IExtensionSet>();
+            this.FileExtension = string.Empty;
+        }
+
+        // public List<IExtensionSet> ExtensionSets
+        // {
+        //     get => field;
+        //     set
+        //     {
+        //         this.SetProperty(ref field, value);
+        //     }
+        // }
+
+        required public string FileExtension
+        {
+            get => field;
             set
             {
+                this.SetProperty(ref field, value);
             }
         }
 
-        public List<IExtensionSet> ExtensionSets
+        required public string Description
         {
-            get => default;
+            get => field;
             set
             {
+                this.SetProperty(ref field, value);
             }
         }
 
-        public string Description
+        public Dictionary<string, IExtensionSet> ExtensionMappings => throw new NotImplementedException();
+
+        public void Map()
         {
-            get => default;
-            set
-            {
-            }
+            throw new NotImplementedException();
         }
     }
 }

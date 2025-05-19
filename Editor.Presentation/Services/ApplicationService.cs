@@ -2,9 +2,10 @@
 // Copyright (c) Lukas Stumpfel. All rights reserved.
 // </copyright>
 
-namespace Editor.Services
+namespace Editor.Presentation.Services
 {
     using System.Windows;
+    using Editor.Application;
 
     /// <summary>
     /// Provides application-level services such as shutting down the application.

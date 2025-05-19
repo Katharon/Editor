@@ -2,7 +2,7 @@
 // Copyright (c) Lukas Stumpfel. All rights reserved.
 // </copyright>
 
-namespace Editor.Commands
+namespace Editor.Presentation.Commands
 {
     using System;
     using System.Windows.Input;

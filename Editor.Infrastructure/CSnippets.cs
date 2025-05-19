@@ -1,12 +1,28 @@
 ﻿namespace Editor.Infrastructure
 {
+    using Editor.Domain;
     using Editor.PluginContracts;
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
 
-    public class CSnippets : ISnippetProvider
+    public class CSnippets : ObservableObject, ISnippetProvider
     {
+        required public string Name
+        {
+            get => field;
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException(nameof(Name), "Value cannot be null.");
+                }
+
+                this.SetProperty(ref field, value);
+            }
+        }
+
+        public Snippet? TryExpandSnippet(Document document, CursorPosition cursor)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

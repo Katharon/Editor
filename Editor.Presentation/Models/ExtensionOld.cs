@@ -1,20 +1,20 @@
-﻿// <copyright file="Extension.cs" company="Fachhochschule Wiener Neustadt GmbH">
+﻿// <copyright file="ExtensionOld.cs" company="Fachhochschule Wiener Neustadt GmbH">
 // Copyright (c) Lukas Stumpfel. All rights reserved.
 // </copyright>
 
-namespace Editor.Models
+namespace Editor.Presentation.Models
 {
     using System.ComponentModel;
 
     /// <summary>
     /// Represents an extension that can be activated or deactivated in the editor.
     /// </summary>
-    public class Extension : INotifyPropertyChanged
+    public class ExtensionOld : INotifyPropertyChanged
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Extension"/> class.
+        /// Initializes a new instance of the <see cref="ExtensionOld"/> class.
         /// </summary>
-        public Extension()
+        public ExtensionOld()
         {
         }
 

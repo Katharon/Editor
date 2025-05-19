@@ -7,7 +7,7 @@ namespace Editor.Extensions
     using System.Collections.Generic;
     using System.Text.RegularExpressions;
     using System.Windows.Documents;
-    using Editor.Models;
+    using Editor.Presentation.Models;
 
     /// <summary>
     /// .

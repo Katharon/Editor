@@ -5,8 +5,9 @@
 namespace Editor
 {
     using System.Windows;
-    using Editor.Services;
-    using Editor.ViewModels;
+    using Editor.Application;
+    using Editor.Presentation.Services;
+    using Editor.Presentation.ViewModels;
     using Editor.Views;
 
     /// <summary>
@@ -15,7 +16,9 @@ namespace Editor
     public partial class MainWindow : Window
     {
         private readonly IApplicationService applicationService = new ApplicationService();
+
         private readonly IDialogService dialogService = new DialogService();
+
         private readonly IExtensionService extensionService = new ExtensionService();
 
         /// <summary>

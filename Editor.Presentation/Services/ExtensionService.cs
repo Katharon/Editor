@@ -2,13 +2,14 @@
 // Copyright (c) Lukas Stumpfel. All rights reserved.
 // </copyright>
 
-namespace Editor.Services
+namespace Editor.Presentation.Services
 {
-    using Editor.Extensions;
     using System;
     using System.IO;
     using System.Reflection;
     using System.Runtime.Loader;
+    using Editor.Application;
+    using Editor.Extensions;
 
     /// <summary>
     /// Provides functionality for managing and interacting with editor extensions.
@@ -32,7 +33,6 @@ namespace Editor.Services
             watcher.Created += (_, e) => this.LoadPlugin(e.FullPath);
             watcher.Changed += (_, e) => this.ReloadPlugin(e.FullPath);
             watcher.EnableRaisingEvents = true;
-
         }
 
         private void LoadPlugin(string fullPath)

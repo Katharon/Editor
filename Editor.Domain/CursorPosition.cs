@@ -1,28 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Editor.Domain
+﻿namespace Editor.Domain
 {
-    public struct CursorPosition
+    using System;
+    using System.ComponentModel;
+
+    public struct CursorPosition : INotifyPropertyChanged
     {
-        public int X
+        required public int X
         {
-            get => default;
+            readonly get => field;
             set
             {
+                ArgumentOutOfRangeException.ThrowIfNegative(value);
+                field = value;
+                this.RaiseOnPropertyChanged(nameof(X));
             }
         }
 
-        public int Y
+        required public int Y
         {
-            get => default;
+            readonly get => field;
             set
             {
+                ArgumentOutOfRangeException.ThrowIfNegative(value);
+                field = value;
+                this.RaiseOnPropertyChanged(nameof(Y));
             }
         }
 
-        public int Index { get; set; }
+        required public int Index
+        {
+            readonly get => field;
+            set
+            {
+                ArgumentOutOfRangeException.ThrowIfNegative(value);
+                field = value;
+                this.RaiseOnPropertyChanged(nameof(Index));
+            }
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        private readonly void RaiseOnPropertyChanged(string propertyName)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

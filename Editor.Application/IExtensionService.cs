@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Editor.Domain
+namespace Editor.Application
 {
-    public class ExtensionSet : IExtensionSet
+    public interface IExtensionService
     {
     }
 }

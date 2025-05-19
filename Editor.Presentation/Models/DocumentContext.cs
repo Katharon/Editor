@@ -2,9 +2,9 @@
 // Copyright (c) Lukas Stumpfel. All rights reserved.
 // </copyright>
 
-namespace Editor.Models
+namespace Editor.Presentation.Models
 {
-    using Editor.Controls;
+    using Editor.Presentation.Controls;
 
     /// <summary>
     /// .

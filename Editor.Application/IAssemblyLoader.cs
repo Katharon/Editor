@@ -1,12 +1,14 @@
 ﻿namespace Editor.Application
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
+    using Editor.Application.Events;
+    using Editor.PluginContracts;
 
     public interface IAssemblyLoader
     {
-        void Load();
+        IEnumerable<IExtension> LoadAll();
+
+        void StartWatching();
+
+        event EventHandler<ExtensionsLoadedEventArgs>? AssemblyLoaded;
     }
 }

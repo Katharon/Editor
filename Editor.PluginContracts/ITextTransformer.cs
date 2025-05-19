@@ -1,6 +1,6 @@
 ﻿namespace Editor.PluginContracts
 {
-    using System;
+    using Editor.Domain;
 
     public interface ITextTransformer : IExtension
     {

@@ -1,6 +1,6 @@
 ﻿namespace Editor.PluginContracts
 {
-    using System;
+    using Editor.Domain;
     using System.Collections.Generic;
 
     public interface ISyntaxHighlighter : IExtension

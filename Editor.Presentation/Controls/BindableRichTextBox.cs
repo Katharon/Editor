@@ -2,7 +2,7 @@
 // Copyright (c) Lukas Stumpfel. All rights reserved.
 // </copyright>
 
-namespace Editor.Controls
+namespace Editor.Presentation.Controls
 {
     using System.Windows;
     using System.Windows.Controls;

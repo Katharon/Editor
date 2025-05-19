@@ -1,8 +1,8 @@
-﻿// <copyright file="Document.cs" company="Fachhochschule Wiener Neustadt GmbH">
+﻿// <copyright file="DocumentOld.cs" company="Fachhochschule Wiener Neustadt GmbH">
 // Copyright (c) Lukas Stumpfel. All rights reserved.
 // </copyright>
 
-namespace Editor.Models
+namespace Editor.Presentation.Models
 {
     using System.ComponentModel;
     using System.Windows.Documents;
@@ -11,12 +11,12 @@ namespace Editor.Models
     /// Represents a document model containing metadata and content for editing.
     /// Supports property change notifications for data binding.
     /// </summary>
-    public class Document : INotifyPropertyChanged
+    public class DocumentOld : INotifyPropertyChanged
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Document"/> class.
+        /// Initializes a new instance of the <see cref="DocumentOld"/> class.
         /// </summary>
-        public Document()
+        public DocumentOld()
         {
             this.FlowDocument = new FlowDocument();
         }

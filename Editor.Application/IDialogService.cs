@@ -1,11 +1,13 @@
 ﻿namespace Editor.Application
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-
     public interface IDialogService
     {
+        string? ShowOpenFileDialog(string title, string filter);
+
+        string? ShowSaveFileDialog(string title, string filter, string defaultExtension);
+
+        void ShowMessage(string message, string title = "Info");
+
+        void ShowError(string message, string title = "Fehler");
     }
 }
