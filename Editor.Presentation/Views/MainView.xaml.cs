@@ -4,11 +4,12 @@
 
 namespace Editor.Presentation.Views
 {
-    using System.Text.RegularExpressions;
+    using System;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Documents;
     using System.Windows.Media;
+    using Editor.Application.Events;
     using Editor.Presentation.Controls;
     using Editor.Presentation.Helpers;
 
@@ -17,33 +18,6 @@ namespace Editor.Presentation.Views
     /// </summary>
     public partial class MainView : Page
     {
-        private static readonly Dictionary<string, SolidColorBrush> KeywordColors = new ()
-        {
-            // Sichtbarkeiten
-            ["public"] = Brushes.MediumPurple,
-            ["private"] = Brushes.MediumPurple,
-            ["protected"] = Brushes.MediumPurple,
-            ["internal"] = Brushes.MediumPurple,
-
-            // Typen
-            ["int"] = Brushes.Orange,
-            ["float"] = Brushes.Orange,
-            ["string"] = Brushes.Orange,
-            ["bool"] = Brushes.Orange,
-            ["void"] = Brushes.Orange,
-
-            // Kontrollfluss
-            ["if"] = Brushes.LightGreen,
-            ["else"] = Brushes.LightGreen,
-            ["return"] = Brushes.LightGreen,
-
-            // Klassendeklaration
-            ["class"] = Brushes.DeepSkyBlue,
-
-            // Methoden
-            ["static"] = Brushes.Coral,
-        };
-
         private readonly Window window;
 
         private bool isUpdatingInternally = false;
@@ -56,15 +30,8 @@ namespace Editor.Presentation.Views
         {
             this.InitializeComponent();
             this.window = window;
-        }
 
-        /// <summary>
-        /// Handles the Loaded event of the editor control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The event data.</param>
-        private void Editor_Loaded(object sender, RoutedEventArgs e)
-        {
+            HighlightsLoadedEvent.HighlightsLoaded += this.OnHighlightsLoaded;
         }
 
         /// <summary>
@@ -73,6 +40,14 @@ namespace Editor.Presentation.Views
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The event data.</param>
         private void Editor_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (sender is BindableRichTextBox textBox)
+            {
+                EditorTextChangedEvent.RaiseOnEditorTextChanged(textBox, e);
+            }
+        }
+
+        private void OnHighlightsLoaded(object? sender, HighlightsLoadedEventArgs e)
         {
             if (this.isUpdatingInternally)
             {
@@ -90,26 +65,27 @@ namespace Editor.Presentation.Views
                 fullRange.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.White);
                 fullRange.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Normal);
 
-                string fullText = fullRange.Text;
-
-                var keywordRegex = new Regex(@"\b(" + string.Join("|", KeywordColors.Keys) + @")\b");
-                foreach (Match match in keywordRegex.Matches(fullText))
+                var highlightSpans = e.Highlights.ToList();
+                foreach (var span in highlightSpans)
                 {
-                    var word = match.Value;
-
-                    if (!KeywordColors.TryGetValue(word, out var color))
+                    if (span.StartIndex < 0 || span.Length <= 0)
                     {
                         continue;
                     }
 
-                    var start = TextHelper.GetTextPositionAtOffset(document.ContentStart, match.Index);
-                    var end = TextHelper.GetTextPositionAtOffset(start!, match.Length);
+                    var start = TextHelper.GetTextPositionAtOffset(document.ContentStart, span.StartIndex);
+                    var end = TextHelper.GetTextPositionAtOffset(start!, span.Length);
 
                     if (start != null && end != null)
                     {
-                        var highlightRange = new TextRange(start, end);
-                        highlightRange.ApplyPropertyValue(TextElement.ForegroundProperty, color);
-                        highlightRange.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Bold);
+                        var range = new TextRange(start, end);
+
+                        if (!string.IsNullOrWhiteSpace(span.HexColor))
+                        {
+                            var color = (Color)ColorConverter.ConvertFromString(span.HexColor);
+                            range.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(color));
+                            range.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Bold);
+                        }
                     }
                 }
             }

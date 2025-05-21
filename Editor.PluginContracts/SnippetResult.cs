@@ -1,6 +1,5 @@
 ﻿namespace Editor.PluginContracts
 {
-    using Editor.Domain;
     using System;
 
     public class Snippet : ObservableObject

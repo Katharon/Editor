@@ -1,6 +1,5 @@
 ﻿namespace Editor.PluginContracts
 {
-    using Editor.Domain;
     using System;
 
     public class HighlightSpan : ObservableObject
@@ -33,14 +32,14 @@
             }
         }
 
-        required public string HighlightType
+        required public string HexColor
         {
             get => field;
             set
             {
                 if (value == null)
                 {
-                    throw new ArgumentNullException(nameof(HighlightType), "Highlight type cannot be null.");
+                    throw new ArgumentNullException(nameof(HexColor), "Highlight type cannot be null.");
                 }
 
                 this.SetProperty(ref field, value);

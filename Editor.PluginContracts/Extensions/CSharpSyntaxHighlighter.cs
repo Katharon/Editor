@@ -1,6 +1,5 @@
 ﻿namespace Editor.PluginContracts.Extensions
 {
-    using Editor.Domain;
     using Editor.PluginContracts;
     using System;
     using System.Collections.Generic;
@@ -19,6 +18,12 @@
 
                 this.SetProperty(ref field, value);
             }
+        }
+
+        public bool IsActive
+        {
+            get => field;
+            set => this.SetProperty(ref field, value);
         }
 
         public void Initialize()

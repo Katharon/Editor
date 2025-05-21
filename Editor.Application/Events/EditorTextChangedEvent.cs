@@ -2,13 +2,13 @@
 {
     using System;
 
-    public class EditorTextChangedEvent
+    public static class EditorTextChangedEvent
     {
-        public event EventHandler? EditorTextChanged;
+        public static event EventHandler? EditorTextChanged;
 
-        public void RaiseOnEditorTextChanged()
+        public static void RaiseOnEditorTextChanged(object sender, EventArgs e)
         {
-            EditorTextChanged?.Invoke(this, EventArgs.Empty);
+            EditorTextChanged?.Invoke(sender, e);
         }
     }
 }

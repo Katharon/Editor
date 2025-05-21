@@ -12,9 +12,8 @@ namespace Editor.Presentation.ViewModels
     using System.Windows.Documents;
     using System.Windows.Input;
     using Editor.Application;
-    using Editor.Domain;
+    using Editor.Application.Events;
     using Editor.PluginContracts;
-    using Editor.PluginContracts.Extensions;
     using Editor.Presentation.Commands;
 
     /// <summary>
@@ -47,7 +46,8 @@ namespace Editor.Presentation.ViewModels
 
             this.NewFileCommand.Execute(null);
             this.Extensions = new ObservableCollection<IExtension>(this.extensionService.LoadExtensions());
-            this.Extensions.Add(new CSharpSyntaxHighlighter { Name = "CSharpSyntaxHighlighter" });
+
+            EditorTextChangedEvent.EditorTextChanged += this.UpdateHighlights;
         }
 
         /// <summary>
@@ -324,6 +324,41 @@ namespace Editor.Presentation.ViewModels
         /// Gets the command to delete the selected set.
         /// </summary>
         public ICommand DeleteSetCommand => new RelayCommand(() => MessageBox.Show("Delete Set Command"));
+
+        /// <summary>
+        /// Gets.
+        /// </summary>
+        public ObservableCollection<HighlightSpan> Highlights { get; } = new ();
+
+        /// <summary>
+        /// .
+        /// </summary>
+        /// <param name="sender">..</param>
+        /// <param name="e">...</param>
+        private void UpdateHighlights(object? sender, EventArgs e)
+        {
+            this.Highlights.Clear();
+
+            var document = new Document
+            {
+                Content = this.SelectedDocument?.Content ?? string.Empty,
+                FileName = this.SelectedDocument?.FileName!,
+            };
+
+            foreach (var highlighter in this.Extensions.OfType<ISyntaxHighlighter>())
+            {
+                foreach (var span in highlighter.GetHighlights(document))
+                {
+                    if (highlighter.IsActive)
+                    {
+                        this.Highlights.Add(span);
+                    }
+                }
+            }
+
+            var eventArgs = new HighlightsLoadedEventArgs(this.Highlights);
+            HighlightsLoadedEvent.RaiseOnHighlightsLoaded(sender!, eventArgs);
+        }
 
         /// <summary>
         /// Raises the <see cref="PropertyChangedOld"/> event for the specified property.

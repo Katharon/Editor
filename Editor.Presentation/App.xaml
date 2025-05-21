@@ -123,12 +123,12 @@
         </Style>
 
         <!-- Side Bar -->
-        <Style TargetType="ListBox">
+        <Style TargetType="ItemsControl">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Padding" Value="5" />
+            <Setter Property="Padding" Value="10,10,5,0" />
         </Style>
-
+        
         <!-- Main Content  -->
         <Style TargetType="TabControl">
             <Setter Property="Padding" Value="0" />

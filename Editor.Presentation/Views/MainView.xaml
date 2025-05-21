@@ -85,32 +85,19 @@
             <Border Grid.Column="0" BorderThickness="0,0,1,0" BorderBrush="{StaticResource BorderSegmentation}">
                 <StackPanel Orientation="Vertical">
                     <!-- Extension Set Header -->
-                    <TextBlock Text="Extension-Sets" Margin="5,10,0,0" />
+                    <TextBlock Text="Extensions" Margin="5,10,0,0" />
 
-                    <!-- Extension Sets -->
-                    <ListBox ItemsSource="{Binding ExtensionSets}" SelectedItem="{Binding SelectedExtensionSet}">
-                        <ListBox.ItemTemplate>
+                    <!-- Extensions -->
+                    <ItemsControl ItemsSource="{Binding Extensions}">
+                        <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <DockPanel>
-                                    <CheckBox IsChecked="{Binding IsActive}" />
+                                    <CheckBox IsChecked="{Binding IsActive, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                     <TextBlock Text="{Binding Name}" />
-                                    
-                                    <!-- Extensions in Extension Set -->
-                                    <ListBox ItemsSource="{Binding Extensions}" SelectedItem="{Binding DataContext.SelectedExtension,
-                                                                                               RelativeSource={RelativeSource AncestorType=Window}}">
-                                        <ListBox.ItemTemplate>
-                                            <DataTemplate>
-                                                <DockPanel>
-                                                    <CheckBox IsChecked="{Binding IsActive}" />
-                                                    <TextBlock Text="{Binding Name}" />
-                                                </DockPanel>
-                                            </DataTemplate>
-                                        </ListBox.ItemTemplate>
-                                    </ListBox>
                                 </DockPanel>
                             </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </StackPanel>
             </Border>
 

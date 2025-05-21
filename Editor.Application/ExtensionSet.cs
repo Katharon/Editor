@@ -1,6 +1,5 @@
 ﻿namespace Editor.Application
 {
-    using Editor.Domain;
     using Editor.PluginContracts;
     using System.Collections.Generic;
 
