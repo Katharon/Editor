@@ -16,20 +16,22 @@ namespace Editor.Presentation.Controls
         /// <summary>
         /// .
         /// </summary>
-        public static readonly DependencyProperty BindableDocumentProperty =
+        public static readonly DependencyProperty BindableContentProperty =
             DependencyProperty.Register(
-                nameof(BindableDocument),
-                typeof(FlowDocument),
+                nameof(ContentText),
+                typeof(string),
                 typeof(BindableRichTextBox),
-                new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnBindableDocumentChanged));
+                new FrameworkPropertyMetadata(string.Empty, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnContentTextChanged));
+
+        private bool isUpdatingInternally = false;
 
         /// <summary>
         /// Gets or sets.
         /// </summary>
-        public FlowDocument BindableDocument
+        public string ContentText
         {
-            get => (FlowDocument)this.GetValue(BindableDocumentProperty);
-            set => this.SetValue(BindableDocumentProperty, value);
+            get => (string)this.GetValue(BindableContentProperty);
+            set => this.SetValue(BindableContentProperty, value);
         }
 
         /// <summary>
@@ -38,14 +40,38 @@ namespace Editor.Presentation.Controls
         /// <param name="e">..</param>
         protected override void OnTextChanged(TextChangedEventArgs e)
         {
+            if (this.isUpdatingInternally)
+            {
+                return;
+            }
+
             base.OnTextChanged(e);
-            this.SetCurrentValue(BindableDocumentProperty, this.Document);
+
+            var text = new TextRange(this.Document.ContentStart, this.Document.ContentEnd).Text;
+            this.SetCurrentValue(BindableContentProperty, text);
         }
 
-        private static void OnBindableDocumentChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnContentTextChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
         {
-            var rtb = (BindableRichTextBox)d;
-            rtb.Document = e.NewValue as FlowDocument ?? new FlowDocument();
+            var richTextBox = (BindableRichTextBox)dependencyObject;
+            var newText = e.NewValue as string ?? string.Empty;
+
+            if (richTextBox.isUpdatingInternally)
+            {
+                return;
+            }
+
+            richTextBox.isUpdatingInternally = true;
+
+            var range = new TextRange(richTextBox.Document.ContentStart, richTextBox.Document.ContentEnd);
+            var currentText = range.Text;
+
+            if (currentText != newText)
+            {
+                range.Text = newText;
+            }
+
+            richTextBox.isUpdatingInternally = false;
         }
     }
 }

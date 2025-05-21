@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Editor.Application
+﻿namespace Editor.Application
 {
+    using Editor.PluginContracts;
+    using System.Collections.Generic;
+
     public interface IExtensionService
     {
+        IEnumerable<IExtension> LoadExtensions();
     }
 }

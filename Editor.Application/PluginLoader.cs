@@ -1,22 +1,31 @@
-﻿namespace Editor.Infrastructure
+﻿namespace Editor.Application
 {
-    using Editor.Application;
     using Editor.Application.Events;
     using Editor.PluginContracts;
     using System;
     using System.Collections.Generic;
     using System.Runtime.Loader;
 
-    public class AssemblyLoader : IAssemblyLoader
+    public class PluginLoader : IPluginLoader
     {
         private readonly HashSet<string> loadedAssemblies;
 
         private readonly string pluginDirectory;
 
-        public AssemblyLoader()
+        public PluginLoader()
         {
-            this.loadedAssemblies = new HashSet<string>();
-            this.pluginDirectory = Path.Combine(AppContext.BaseDirectory, "Extensions");
+            loadedAssemblies = new HashSet<string>();
+
+            string solutionPath = Directory
+                .GetParent(AppDomain.CurrentDomain.BaseDirectory)
+                ?.Parent
+                ?.Parent
+                ?.Parent
+                ?.Parent
+                ?.FullName
+                ?? throw new ArgumentNullException(nameof(solutionPath));
+
+            this.pluginDirectory = Path.Combine(solutionPath, "Extensions");
             Directory.CreateDirectory(this.pluginDirectory);
         }
 
@@ -65,7 +74,7 @@
 
         public void StartWatching()
         {
-            var watcher = new FileSystemWatcher(this.pluginDirectory, "*.dll")
+            var watcher = new FileSystemWatcher(pluginDirectory, "*.dll")
             {
                 NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite,
                 EnableRaisingEvents = true

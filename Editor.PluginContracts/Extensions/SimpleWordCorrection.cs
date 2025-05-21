@@ -1,4 +1,4 @@
-﻿namespace Editor.Infrastructure
+﻿namespace Editor.PluginContracts.Extensions
 {
     using Editor.Domain;
     using Editor.PluginContracts;
@@ -18,6 +18,11 @@
 
                 this.SetProperty(ref field, value);
             }
+        }
+
+        public void Initialize()
+        {
+            throw new NotImplementedException();
         }
 
         public void Transform(Document document)

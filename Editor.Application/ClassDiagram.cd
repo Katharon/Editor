@@ -50,10 +50,40 @@
   <Class Name="Editor.Application.ExtensionSet" BaseTypeListCollapsed="true">
     <Position X="5" Y="3.75" Width="3.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAgAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAEAAAQAAAAAAAAAAAgAAAAAAAA=</HashCode>
       <FileName>ExtensionSet.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Editor.Application.Events.ExtensionsLoadedEventArgs">
+    <Position X="23.75" Y="6.75" Width="4.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Events\ExtensionsLoadedEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Editor.Application.Events.FileChangedEventArgs">
+    <Position X="22" Y="7.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>Events\FileChangedEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Editor.Application.ExtensionService" BaseTypeListCollapsed="true">
+    <Position X="22" Y="6.75" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ExtensionService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Editor.Application.PluginLoader" BaseTypeListCollapsed="true">
+    <Position X="25.5" Y="11.5" Width="5" />
+    <TypeIdentifier>
+      <HashCode>BEAAAAAAAAAAEAAAAAAAAAAAQAAEAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>PluginLoader.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Interface Name="Editor.Application.IApplicationService">
     <Position X="0.5" Y="8.75" Width="3" />
@@ -62,11 +92,11 @@
       <FileName>IApplicationService.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Editor.Application.IAssemblyLoader">
+  <Interface Name="Editor.Application.IPluginLoader">
     <Position X="3.75" Y="8.75" Width="3.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAQAAEAAAAAAAAAAAAAAE=</HashCode>
-      <FileName>IAssemblyLoader.cs</FileName>
+      <FileName>IPluginLoader.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Editor.Application.IDialogService">
@@ -112,10 +142,17 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="Editor.Application.IExtensionService">
-    <Position X="15" Y="8.75" Width="2.25" />
+    <Position X="15" Y="8.75" Width="3" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>IExtensionService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Editor.Application.IFileSystemWatcherOld">
+    <Position X="22" Y="9" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IFileSystemWatcherOld.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />

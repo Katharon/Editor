@@ -3,7 +3,7 @@
     using Editor.Application.Events;
     using Editor.PluginContracts;
 
-    public interface IAssemblyLoader
+    public interface IPluginLoader
     {
         IEnumerable<IExtension> LoadAll();
 

@@ -1,10 +1,10 @@
-﻿namespace Editor.Infrastructure
+﻿namespace Editor.PluginContracts.Extensions
 {
     using Editor.Domain;
     using Editor.PluginContracts;
     using System;
 
-    public class CSnippets : ObservableObject, ISnippetProvider
+    public class CSharpSnippets : ObservableObject, ISnippetProvider
     {
         required public string Name
         {
@@ -18,6 +18,11 @@
 
                 this.SetProperty(ref field, value);
             }
+        }
+
+        public void Initialize()
+        {
+            throw new NotImplementedException();
         }
 
         public Snippet? TryExpandSnippet(Document document, CursorPosition cursor)

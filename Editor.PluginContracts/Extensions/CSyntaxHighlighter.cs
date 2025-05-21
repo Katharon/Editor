@@ -1,11 +1,11 @@
-﻿namespace Editor.Infrastructure
+﻿namespace Editor.PluginContracts.Extensions
 {
     using Editor.Domain;
     using Editor.PluginContracts;
     using System;
     using System.Collections.Generic;
 
-    public class CSharpSyntaxHighlighter : ObservableObject, ISyntaxHighlighter
+    public class CSyntaxHighlighter : ObservableObject, ISyntaxHighlighter
     {
         required public string Name
         {
@@ -19,6 +19,11 @@
 
                 this.SetProperty(ref field, value);
             }
+        }
+
+        public void Initialize()
+        {
+            throw new NotImplementedException();
         }
 
         public IEnumerable<HighlightSpan> GetHighlights(Document document)

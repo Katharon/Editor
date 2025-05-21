@@ -13,8 +13,9 @@ namespace Editor.Presentation.ViewModels
     using System.Windows.Input;
     using Editor.Application;
     using Editor.Domain;
+    using Editor.PluginContracts;
+    using Editor.PluginContracts.Extensions;
     using Editor.Presentation.Commands;
-    using Editor.Presentation.Models;
 
     /// <summary>
     /// Represents the main view model of the application, containing documents, extensions,
@@ -40,11 +41,13 @@ namespace Editor.Presentation.ViewModels
             this.dialogService = dialogService;
             this.extensionService = extensionService;
 
-            this.Extensions = new ObservableCollection<ExtensionOld>();
-            this.ExtensionSets = new ObservableCollection<ExtensionSet>();
+            this.Extensions = new ObservableCollection<IExtension>();
+            this.ExtensionSets = new ObservableCollection<IExtensionSet>();
             this.Documents = new ObservableCollection<Document>();
 
             this.NewFileCommand.Execute(null);
+            this.Extensions = new ObservableCollection<IExtension>(this.extensionService.LoadExtensions());
+            this.Extensions.Add(new CSharpSyntaxHighlighter { Name = "CSharpSyntaxHighlighter" });
         }
 
         /// <summary>
@@ -79,12 +82,12 @@ namespace Editor.Presentation.ViewModels
         /// <summary>
         /// Gets or sets the collection of available extensions.
         /// </summary>
-        public ObservableCollection<ExtensionOld> Extensions { get; set; }
+        public ObservableCollection<IExtension> Extensions { get; set; }
 
         /// <summary>
         /// Gets or sets the currently selected extension.
         /// </summary>
-        public ExtensionOld? SelectedExtension
+        public IExtension? SelectedExtension
         {
             get => field;
             set
@@ -96,12 +99,12 @@ namespace Editor.Presentation.ViewModels
         /// <summary>
         /// Gets or sets the collection of available extension sets.
         /// </summary>
-        public ObservableCollection<ExtensionSet> ExtensionSets { get; set; }
+        public ObservableCollection<IExtensionSet> ExtensionSets { get; set; }
 
         /// <summary>
         /// Gets or sets the currently selected extension set.
         /// </summary>
-        public ExtensionSet? SelectedExtensionSet
+        public IExtensionSet? SelectedExtensionSet
         {
             get => field;
             set
@@ -273,28 +276,6 @@ namespace Editor.Presentation.ViewModels
         public ICommand ExitCommand => new RelayCommand(() =>
         {
             this.applicationService.Shutdown();
-        });
-
-        /// <summary>
-        /// Gets the command to add a new extension.
-        /// </summary>
-        public ICommand NewExtensionCommand => new RelayCommand(() =>
-        {
-            // ToDo: nur Extensionnamen speichern.
-            string? filePath = this.dialogService.ShowSaveFileDialog("Extension Namen wählen", "Textdateien (*.txt)|*.txt|Alle Dateien (*.*)|*.*", string.Empty);
-            if (filePath == null)
-            {
-                return;
-            }
-
-            var extension = new ExtensionOld()
-            {
-                DisplayName = Path.GetFileName(filePath),
-                IsEnabled = false,
-            };
-
-            this.Extensions.Add(extension);
-            this.SelectedExtension = extension;
         });
 
         /// <summary>

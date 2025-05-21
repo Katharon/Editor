@@ -1,10 +1,10 @@
-﻿<Page x:Class="Editor.Views.MainView"
+﻿<Page x:Class="Editor.Presentation.Views.MainView"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:controls="clr-namespace:Editor.Controls"
-      xmlns:viewModels="clr-namespace:Editor.ViewModels"
+      xmlns:controls="clr-namespace:Editor.Presentation.Controls"
+      xmlns:viewModels="clr-namespace:Editor.Presentation.ViewModels"
       mc:Ignorable="d" 
       d:DesignHeight="720" d:DesignWidth="1280"
       d:DataContext="{d:DesignInstance Type=viewModels:MainViewModel, IsDesignTimeCreatable=False}"
@@ -57,7 +57,7 @@
                     </MenuItem>
 
                     <MenuItem Header="_Extensions" Height="34">
-                        <MenuItem Header="Extension-_Hinzufügen" InputGestureText="Strg+E" Command="{Binding NewExtensionSetCommand}" />
+                        <MenuItem Header="Extension-Set _hinzufügen" InputGestureText="Strg+E" Command="{Binding NewExtensionSetCommand}" />
                         <MenuItem Header="Dateitypen-_Mapping" InputGestureText="Strg+M" Command="{Binding ManageMappingsCommand}" />
                     </MenuItem>
 
@@ -93,8 +93,20 @@
                             <DataTemplate>
                                 <DockPanel>
                                     <CheckBox IsChecked="{Binding IsActive}" />
-                                    <TextBlock Text="{Binding DisplayName}" />
-                                    <Button Content="+" Background="Red" Command="{Binding NewExtensionCommand}" />
+                                    <TextBlock Text="{Binding Name}" />
+                                    
+                                    <!-- Extensions in Extension Set -->
+                                    <ListBox ItemsSource="{Binding Extensions}" SelectedItem="{Binding DataContext.SelectedExtension,
+                                                                                               RelativeSource={RelativeSource AncestorType=Window}}">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <DockPanel>
+                                                    <CheckBox IsChecked="{Binding IsActive}" />
+                                                    <TextBlock Text="{Binding Name}" />
+                                                </DockPanel>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
                                 </DockPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
@@ -114,8 +126,9 @@
                 <!-- Tab Content -->
                 <TabControl.ContentTemplate>
                     <DataTemplate>
-                        <controls:BindableRichTextBox BindableDocument="{Binding FlowDocument, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                      TextChanged="Editor_TextChanged" />
+                        <controls:BindableRichTextBox ContentText="{Binding Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                      TextChanged="Editor_TextChanged"
+                                                      FontSize="14" />
                     </DataTemplate>
                 </TabControl.ContentTemplate>
             </TabControl>
